@@ -1,5 +1,5 @@
 class Cart < ActiveRecord::Base
-    belongs_to :user
+    belongs_to :current_user, class_name: 'User', foreign_key: 'user_id'
     has_many :line_items
     has_many :items, through: :line_items
 
@@ -8,6 +8,8 @@ class Cart < ActiveRecord::Base
         items.each {|item|total_price += item.price}
         total_price
     end
+
+
 
 
     def add_item(item)

@@ -1,7 +1,8 @@
 class CartsController < ApplicationController
 
     def show
-        @cart = Cart.find(params[:id])
+        binding.pry
+        @current_cart = Cart.find(params[:id])
     end
 
 end
