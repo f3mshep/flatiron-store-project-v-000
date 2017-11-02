@@ -6,12 +6,22 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   def current_cart=(value)
-    binding.pry
-    self.update(current_cart_id: value.id)
-    cart = Cart.find(current_cart_id)
-    cart.current_user = self
-    cart.save
-    cart
+    if value.nil?
+      #this is because of one test. Would like to stick checkout_cart here.
+      self.update(current_cart_id: nil)
+      current_cart
+    else
+      self.update(current_cart_id: value.id)
+      cart = Cart.find(current_cart_id)
+      cart.current_user = self
+      cart.save
+      cart
+    end
+  end
+
+  def checkout_cart
+    current_cart.update(current_user: nil)
+    self.update(current_cart_id: nil)
   end
 
   def current_cart

@@ -5,12 +5,18 @@ class Cart < ActiveRecord::Base
 
     def total
         total_price = 0
-        items.each {|item|total_price += item.price}
+        line_items.each {|line_item|total_price += (line_item.item.price * line_item.quantity)}
         total_price
     end
 
-
-
+    def checkout
+        line_items.each do |line_item|
+            line_item.item_inventory = line_item.item_inventory - line_item.quantity
+            line_item.item.save
+        end
+        self.update(status: "complete" )
+        current_user.checkout_cart
+    end
 
     def add_item(item)
         old_line_item = LineItem.find_by(cart_id: self.id, item_id: item)
